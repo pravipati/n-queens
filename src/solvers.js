@@ -14,6 +14,23 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 window.findNRooksSolution = function(n) {
+
+  //instantiate an empty board
+  //set R1 to (0,0)
+
+  //recursive function
+    //input: board obj, numRooks
+    //output: an array of boards with numRooks+1 rooks
+    //
+    //initialize outputSolArray
+    //loop through numRooksth row
+      // create a copy of the board
+      // add rook to board at (numRooks, j)
+      // check for conflict
+        // board.hasAny....
+      // if no conflict (all false), then
+
+
   var solution = undefined; //fixme
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
