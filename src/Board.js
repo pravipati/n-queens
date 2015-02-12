@@ -137,12 +137,12 @@
       var n = this.get("n");
 
       if (majorDiagonalColumnIndexAtFirstRow <= n){
-        i = 0;
-        j = n - majorDiagonalColumnIndexAtFirstRow;
+        i = n - majorDiagonalColumnIndexAtFirstRow;
+        j = 0;
       }
       else{
-        i = majorDiagonalColumnIndexAtFirstRow;
-        j = 0;
+        i = 0;
+        j = majorDiagonalColumnIndexAtFirstRow - n;
       }
       while (i<n && j<n){
         count += board[i][j];
