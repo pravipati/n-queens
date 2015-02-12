@@ -18,9 +18,6 @@ window.findNRooksSolution = function(n) {
   //declare finalSolArray
   var finalSolArray = [];
   //instantiate an empty board
-  var boardx = new Board({n: n});
-  //set R1 to (0,0)
-  boardx.togglePiece(0,0);
 
   var recurseBoard = function(board, numRooks, n){
   //recursive function: recurseBoard
@@ -59,7 +56,13 @@ window.findNRooksSolution = function(n) {
     //
   };
 
-  recurseBoard(boardx,1,n);
+  for(var i = 0; i < n; i++){
+    var initBoard = new Board({n: n});
+    initBoard.togglePiece(0,i);
+    recurseBoard(initBoard,1,n);
+  }
+  //set R1 to (0,0)
+
 
 
 
@@ -79,7 +82,57 @@ window.arrayTrueCopy = function(array){
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+
+  //declare finalSolArray
+  var finalSolArray = [];
+  //instantiate an empty board
+
+  var recurseBoard = function(board, numRooks, n){
+  //recursive function: recurseBoard
+    //input: board obj, numRooks, n
+    //output: an array of boards with numRooks+1 rooks
+    //if numRooks = n,
+      //push the board to finalSolArray
+      //return
+    if (numRooks === n) {
+      finalSolArray.push(board);
+      return;
+    }
+    //initialize outputSolArray
+    var  outputSolArray =[];
+    //loop through numRooksth row
+    for (var j = 0; j < n; j++) {
+      // create a copy of the board
+      var boardArray = arrayTrueCopy(board.rows());
+      var newBoard = new Board(boardArray);
+      // add rook to board at (numRooks, j)
+      newBoard.togglePiece(numRooks, j);
+      // check for conflict
+        // board.hasAny....
+      var conflictPool = !newBoard.hasAnyRowConflicts() && !newBoard.hasAnyColConflicts()
+      // if no conflict (all false), then push to outputSolArray
+      if(conflictPool === true){
+        outputSolArray.push(newBoard);
+      }
+    }
+    //for each board in outputSolArray
+    for(var k = 0; k < outputSolArray.length; k++){
+      recurseBoard(outputSolArray[k], numRooks + 1, n);
+    }
+
+    //recurseBoard(outputSolArray[i], numRooks )
+    //
+  };
+
+  for(var i = 0; i < n; i++){
+    var initBoard = new Board({n: n});
+    initBoard.togglePiece(0,i);
+    recurseBoard(initBoard,1,n);
+  }
+  //set R1 to (0,0)
+
+
+  var solutionCount = finalSolArray.length; //fixme
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
