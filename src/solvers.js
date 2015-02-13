@@ -152,26 +152,26 @@ window.findNQueensSolution = function(n) {
   var finalSolArray = [];
   //instantiate an empty board
 
-  var recurseBoard = function(board, numRooks, n){
+  var recurseBoard = function(board, numQueens, n){
   //recursive function: recurseBoard
-    //input: board obj, numRooks, n
-    //output: an array of boards with numRooks+1 rooks
-    //if numRooks = n,
+    //input: board obj, numQueens, n
+    //output: an array of boards with numQueens+1 rooks
+    //if numQueens = n,
       //push the board to finalSolArray
       //return
-    if (numRooks === n) {
+    if (numQueens === n) {
       finalSolArray.push(board);
       return;
     }
     //initialize outputSolArray
     var  outputSolArray =[];
-    //loop through numRooksth row
+    //loop through numQueensth row
     for (var j = 0; j < n; j++) {
       // create a copy of the board
       var boardArray = arrayTrueCopy(board.rows());
       var newBoard = new Board(boardArray);
-      // add rook to board at (numRooks, j)
-      newBoard.togglePiece(numRooks, j);
+      // add rook to board at (numQueens, j)
+      newBoard.togglePiece(numQueens, j);
       // check for conflict
         // board.hasAny....
       var conflictPool = !newBoard.hasAnyRowConflicts() && !newBoard.hasAnyColConflicts() && !newBoard.hasAnyMajorDiagonalConflicts() && !newBoard.hasAnyMinorDiagonalConflicts();
@@ -182,10 +182,10 @@ window.findNQueensSolution = function(n) {
     }
     //for each board in outputSolArray
     for(var k = 0; k < outputSolArray.length; k++){
-      recurseBoard(outputSolArray[k], numRooks + 1, n);
+      recurseBoard(outputSolArray[k], numQueens + 1, n);
     }
 
-    //recurseBoard(outputSolArray[i], numRooks )
+    //recurseBoard(outputSolArray[i], numQueens )
     //
   };
 
@@ -222,14 +222,14 @@ window.countNQueensSolutions = function(n) {
   var finalSolArray = [];
   //instantiate an empty board
 
-  var recurseBoard = function(board, numRooks, n){
+  var recurseBoard = function(board, numQueens, n){
   //recursive function: recurseBoard
-    //input: board obj, numRooks, n
-    //output: an array of boards with numRooks+1 rooks
-    //if numRooks = n,
+    //input: board obj, numQueens, n
+    //output: an array of boards with numQueens+1 rooks
+    //if numQueens = n,
       //push the board to finalSolArray
       //return
-    if (numRooks === n) {
+    if  (numQueens === n) {
       finalSolArray.push(board);
       return;
     }
@@ -240,8 +240,8 @@ window.countNQueensSolutions = function(n) {
       // create a copy of the board
       var boardArray = arrayTrueCopy(board.rows());
       var newBoard = new Board(boardArray);
-      // add rook to board at (numRooks, j)
-      newBoard.togglePiece(numRooks, j);
+      // add rook to board at (numQueens, j)
+      newBoard.togglePiece(numQueens, j);
       // check for conflict
         // board.hasAny....
       var conflictPool = !newBoard.hasAnyRowConflicts() && !newBoard.hasAnyColConflicts() && !newBoard.hasAnyMajorDiagonalConflicts() && !newBoard.hasAnyMinorDiagonalConflicts();
@@ -252,10 +252,10 @@ window.countNQueensSolutions = function(n) {
     }
     //for each board in outputSolArray
     for(var k = 0; k < outputSolArray.length; k++){
-      recurseBoard(outputSolArray[k], numRooks + 1, n);
+      recurseBoard(outputSolArray[k], numQueens + 1, n);
     }
 
-    //recurseBoard(outputSolArray[i], numRooks )
+    //recurseBoard(outputSolArray[i], numQueens )
     //
   };
 
@@ -265,6 +265,64 @@ window.countNQueensSolutions = function(n) {
     recurseBoard(initBoard,1,n);
   }
   //set R1 to (0,0)
+
+  var solutionCount = finalSolArray.length; //fixme
+
+
+
+  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  return solutionCount;
+};
+
+window.countNQueensSolutionsOptimized = function(n) {
+
+  if (n === 0 || n === 1){
+    var solutionCount = 1;
+    console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+    return solutionCount;
+  }
+  if (n === 2 || n === 3) {
+    var solutionCount = 0;
+    console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+    return solutionCount;
+  }
+
+
+  var finalSolArray = [];
+  //pass the indexes of the col we want to test
+  //call it colIndexArr
+  var recurseBoard = function(board, numQueens, n, colIndexArray){
+    if  (numQueens === n) {
+      finalSolArray.push(board);
+      return;
+    }
+    var  outputSolArray =[];
+    for (var j = 0; j < colIndexArray.length; j++) {
+      var boardArray = arrayTrueCopy(board.rows());
+      var newBoard = new Board(boardArray);
+      newBoard.togglePiece(numQueens, colIndexArray[j]);
+      var conflictPool = !newBoard.hasAnyRowConflicts() && !newBoard.hasAnyColConflicts() && !newBoard.hasAnyMajorDiagonalConflicts() && !newBoard.hasAnyMinorDiagonalConflicts();
+      if(conflictPool === true){
+        outputSolArray.push(newBoard);
+        colIndexArray.slice(colIndexArray[j],1);
+      }
+    }
+    for(var k = 0; k < outputSolArray.length; k++){
+      recurseBoard(outputSolArray[k], numQueens + 1, n, colIndexArray);
+    }
+
+  };
+
+  var initColArray = [];
+  for(var i = 0; i < n; i++){
+    initColArray.push(i);
+  }
+
+  for(var i = 0; i < n; i++){
+    var initBoard = new Board({n: n});
+    initBoard.togglePiece(0,i);
+    recurseBoard(initBoard, 1, n, initColArray);
+  }
 
   var solutionCount = finalSolArray.length; //fixme
 
